@@ -22,7 +22,7 @@ long duration= 0;
 int thresh[3] = {14, 50, 130};
 
 //SENSOR
-const int trigPin = 12;
+const int trigPin = 12; 
 const int echoPin = 13;
 
 //ACTUATOR (LED)
@@ -34,15 +34,15 @@ DynamicJsonBuffer jsonBuffer;
 
 void setup()
 {
-  
   // Debug console
   Serial.begin(9600);
+  
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
   
   pinMode(blueLed, OUTPUT);
   pinMode(greenLed, OUTPUT);
   pinMode(redLed, OUTPUT);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
   
 }
 
@@ -51,54 +51,62 @@ void loop()
 
  JsonObject& root = jsonBuffer.createObject();
   
- digitalWrite(trigPin, LOW);
- delayMicroseconds(2);
- digitalWrite(trigPin, HIGH);
- delayMicroseconds(10);
- digitalWrite(trigPin, LOW);
+ digitalWrite(trigPin, LOW);   //turn OFF ultrasound emitter (Trigger)
+ delayMicroseconds(2);         //wait to finish 2 us
+  
+ digitalWrite(trigPin, HIGH);  //turn ON emitter 
+ delayMicroseconds(10);        //emitter produces 8 cycle sonic burst every 10 us (800000 cycle/s)
+                               //they travel at speed of sound = 340 m/s
+ digitalWrite(trigPin, LOW);   //turn OFF emitter
  
- duration = pulseIn(echoPin, HIGH);
- root[F("duration")] = duration;
- 
- //Distance in cm:
- distance = duration*0.034/2;
+ duration = pulseIn(echoPin, HIGH);  //turn ON ultrasound receiver (Echo)
+                                     // OUTPUT = pulse of duration [us] proportional Round Trip Time of sound 
+ root[F("duration")] = duration;    
+  
+ //v = 340 [m/s] = 0.034 [cm/us]
+ //s = distance [cm]
+ //t = duration/2 [us]
+  
+ distance = duration*0.034/2;     // s = t * v  
+  
  root[F("distance")] = distance;
  
- 
   Serial.println(distance);
-
-  int level = 0;  //empty
+ 
+  //Levels of trash 
   
-   //Turn on only B led when it's over threshold 1
+  int level = 0;  //empty
+ 
   if(distance<thresh[2])
   level = 1;     //not empty
-  
-  //Turn on only G led when it's over threshold 2
+ 
   if(distance<thresh[1])
   level = 2;     //half full
-  
-  //Turn on only R led when it's over threshold 3
+ 
   if(distance<thresh[0])
   level = 3;    //full
  
 switch (level) {
-  case 1:
+    
+  case 1: //Turn on only B led when it's over threshold 1
     digitalWrite(blueLed, HIGH);
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, LOW);
     break;
-  case 2:
+    
+  case 2: //Turn on only G led when it's over threshold 2
     digitalWrite(blueLed, LOW);
     digitalWrite(greenLed, HIGH);
     digitalWrite(redLed, LOW);
     break;
-  case 3:
+    
+  case 3: //Turn on only R led when it's over threshold 3
     digitalWrite(blueLed, LOW);
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, HIGH);
     break;
     
-  default:
+  default: //Turn off all
     digitalWrite(blueLed, LOW);
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, LOW);
