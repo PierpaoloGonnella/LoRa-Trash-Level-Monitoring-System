@@ -1,13 +1,41 @@
 /*
-* Ultrasonic Sensor HC-SR04 and ArduinoUNO
-* 3 Led (R,G,B)
-* 
-* 
-* Crated by:
-*            Pierpaolo Gonnella, 
-*                   Ossama Saki, 
-*              Martin Fleischer. 
-*/
+ *     ,·'´¨;.  '                                   ,.,   '                   ,. -,                 ,. -,          ,.-·.         ,.-.                                 _,.,  °    
+    ;   ';:\           .·´¨';\                 ;´   '· .,            ,.·'´,    ,'\          ,.·'´,    ,'\        /    ;'\'      /   ';\ '                       ,.·'´  ,. ,  `;\ '  
+   ;     ';:'\      .'´     ;:'\              .´  .-,    ';\      ,·'´ .·´'´-·'´::::\'    ,·'´ .·´'´-·'´::::\'     ;    ;:::\    ';    ;:'\      ,·'´';          .´   ;´:::::\`'´ \'\  
+   ;   ,  '·:;  .·´,.´';  ,'::;'             /   /:\:';   ;:'\'   ;    ';:::\::\::;:'    ;    ';:::\::\::;:'     ';    ;::::;'    ';   ;::;     ,'  ,''\        /   ,'::\::::::\:::\:' 
+  ;   ;'`.    ¨,.·´::;'  ;:::;            ,'  ,'::::'\';  ;::';   \·.    `·;:'-·'´       \·.    `·;:'-·'´         ;   ;::::;     ';   ';::;   ,'  ,':::'\'     ;   ;:;:-·'~^ª*';\'´   
+  ;  ';::; \*´\:::::;  ,':::;        ,.-·'  '·~^*'´¨,  ';::;    \:`·.   '`·,  '        \:`·.   '`·,  '        ';  ;'::::;       ';   ;:;  ,'  ,':::::;'     ;  ,.-·:*'´¨'`*´\::\ '  
+ ';  ,'::;   \::\;:·';  ;:::; '        ':,  ,·:²*´¨¯'`;  ;::';      `·:'`·,   \'           `·:'`·,   \'         ;  ';:::';         ;   ;:;'´ ,'::::::;'  '   ;   ;\::::::::::::'\;'   
+ ;  ';::;     '*´  ;',·':::;          ,'  / \::::::::';  ;::';       ,.'-:;'  ,·\           ,.'-:;'  ,·\        ';  ;::::;'        ';   '´ ,·':::::;'        ;  ;'_\_:;:: -·^*';\   
+ \´¨\::;          \¨\::::;          ,' ,'::::\·²*'´¨¯':,'\:;   ,·'´     ,.·´:::'\     ,·'´     ,.·´:::'\        \*´\:::;         ,'   ,.'\::;·´          ';    ,  ,. -·:*'´:\:'\° 
+  '\::\;            \:\;·'           \`¨\:::/          \::\'    \`*'´\::::::::;·'     \`*'´\::::::::;·'        '\::\:;'          \`*´\:::\;             \`*´ ¯\:::::::::::\;' '
+    '´¨               ¨'              '\::\;'            '\;'  '   \::::\:;:·´           \::::\:;:·´               `*´            '\:::\;'                  \:::::\;::-·^*'´     
+                                       `¨'                        '`*'´                 '`*'´                                     `*´                     `*´¯  
+ *  
+ *        .-.      .-----.                  .-.    .--.              
+ *        : :      `-. .-'                  : :   : .--'             
+ *        : : .--.   : :  .--.  .--.   .--. : `-. : :    .--.  ,-.,-.
+ *        : :' .; :  : :  : ..'' .; ; `._-.': .. :: :__ ' .; ; : ,. :
+ *        :_;`.__.'  :_;  :_;  `.__,_;`.__.':_;:_;`.__.'`.__,_;:_;:_;
+ *                                                           
+ *                                                       
+ * 
+ * COMPONENTS:
+ * 
+ * +ArduinoUNO
+ * +Ultrasonic Sensor HC-SR04 
+ * +Led G
+ * +Led B
+ * +Led R
+ *
+ * -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ * Crated by:
+ *            Pierpaolo Gonnella, 
+ *                   Ossama Saki, 
+ *              Martin Fleischer. 
+ *              
+ * -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                     
+ */
 
 
 //#define BLYNK_PRINT Serial
@@ -65,7 +93,7 @@ void loop()
   
  //v = 340 [m/s] = 0.034 [cm/us]
  //s = distance [cm]
- //t = duration/2 [us]
+ //t = duration/2 [us] (Round Trip Time/2)
   
  distance = duration*0.034/2;     // s = t * v  
   
@@ -88,25 +116,25 @@ void loop()
  
 switch (level) {
     
-  case 1: //Turn on only B led when it's over threshold 1
+  case 1: //Turn ON only B led when it's over threshold 1
     digitalWrite(blueLed, HIGH);
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, LOW);
     break;
     
-  case 2: //Turn on only G led when it's over threshold 2
+  case 2: //Turn ON only G led when it's over threshold 2
     digitalWrite(blueLed, LOW);
     digitalWrite(greenLed, HIGH);
     digitalWrite(redLed, LOW);
     break;
     
-  case 3: //Turn on only R led when it's over threshold 3
+  case 3: //Turn ON only R led when it's over threshold 3
     digitalWrite(blueLed, LOW);
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, HIGH);
     break;
     
-  default: //Turn off all
+  default: //Turn OFF all
     digitalWrite(blueLed, LOW);
     digitalWrite(greenLed, LOW);
     digitalWrite(redLed, LOW);
