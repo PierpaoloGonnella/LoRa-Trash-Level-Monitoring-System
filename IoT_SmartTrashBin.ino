@@ -67,16 +67,19 @@ void loop()
  
   Serial.println(distance);
 
-  int level = 0;
+  int level = 0;  //empty
+  
    //Turn on only B led when it's over threshold 1
   if(distance<thresh[2])
-  level = 1;
+  level = 1;     //not empty
+  
   //Turn on only G led when it's over threshold 2
   if(distance<thresh[1])
-  level = 2;
+  level = 2;     //half full
+  
   //Turn on only R led when it's over threshold 3
   if(distance<thresh[0])
-  level = 3;
+  level = 3;    //full
  
 switch (level) {
   case 1:
