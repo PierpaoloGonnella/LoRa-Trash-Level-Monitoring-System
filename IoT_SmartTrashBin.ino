@@ -27,6 +27,7 @@
  * +Led G
  * +Led B
  * +Led R
+ * +RFID module MFRC522
  *
  * -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  * Crated by:
@@ -42,6 +43,7 @@
 
 #include <SPI.h> //optional
 #include <ArduinoJson.h>
+#include <MFRC522.h>
 
 int distance = 0;
 long duration= 0;
@@ -50,20 +52,30 @@ long duration= 0;
 int thresh[3] = {14, 50, 130};
 
 //SENSOR
-const int trigPin = 12; 
-const int echoPin = 13;
+const int trigPin = 5; 
+const int echoPin = 6;
+
+#define RST_PIN         9          // Configurable, see typical pin layout above
+#define SS_PIN          10         // Configurable, see typical pin layout above
 
 //ACTUATOR (LED)
-int blueLed = 9;
-int greenLed = 10;
-int redLed = 11;
+int blueLed = 2;
+int greenLed = 3;
+int redLed = 4;
+
+MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
 DynamicJsonBuffer jsonBuffer;
 
 void setup()
 {
   // Debug console
-  Serial.begin(9600);
+  Serial.begin(9600);    // Initialize serial communications with the PC
+  while (!Serial);    // Do nothing if no serial port is opened (added for Arduinos based on ATMEGA32U4)
+  SPI.begin();      // Init SPI bus
+  mfrc522.PCD_Init();   // Init MFRC522
+  mfrc522.PCD_DumpVersionToSerial();  // Show details of PCD - MFRC522 Card Reader details
+  Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
   
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
@@ -71,15 +83,25 @@ void setup()
   pinMode(blueLed, OUTPUT);
   pinMode(greenLed, OUTPUT);
   pinMode(redLed, OUTPUT);
+
   
 }
 
-void loop()
-{ 
 
- JsonObject& root = jsonBuffer.createObject();
+void readRFID() {
+  // Select one of the cards
+  if ( ! mfrc522.PICC_ReadCardSerial()) {
+    return;
+  }
+
+  // Dump debug info about the card; PICC_HaltA() is automatically called
+  mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
   
- digitalWrite(trigPin, LOW);   //turn OFF ultrasound emitter (Trigger)
+}
+
+void measureThrashLevel(){
+  
+  digitalWrite(trigPin, LOW);   //turn OFF ultrasound emitter (Trigger)
  delayMicroseconds(2);         //wait to finish 2 us
   
  digitalWrite(trigPin, HIGH);  //turn ON emitter 
@@ -89,7 +111,7 @@ void loop()
  
  duration = pulseIn(echoPin, HIGH);  //turn ON ultrasound receiver (Echo)
                                      // OUTPUT = pulse of duration [us] proportional Round Trip Time of sound 
- root[F("duration")] = duration;    
+ //root[F("duration")] = duration;    
   
  //v = 340 [m/s] = 0.034 [cm/us]
  //s = distance [cm]
@@ -97,7 +119,7 @@ void loop()
   
  distance = duration*0.034/2;     // s = t * v  
   
- root[F("distance")] = distance;
+// root[F("distance")] = distance;
  
   Serial.println(distance);
  
@@ -140,6 +162,19 @@ switch (level) {
     digitalWrite(redLed, LOW);
     break;
 } 
+}
+
+void loop()
+{ 
+    // Look for new cards
+  if (mfrc522.PICC_IsNewCardPresent()) {
+     readRFID();
+  }
+  measureThrashLevel();
+
+ JsonObject& root = jsonBuffer.createObject();
+  
+ 
   delay(100);
 }
 
