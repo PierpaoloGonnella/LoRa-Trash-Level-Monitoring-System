@@ -44,6 +44,9 @@
 #include <ArduinoJson.h>
 //#include <MFRC522.h>
 
+#define TOUCH_SENSOR 3 //the touch sensor is connected to D3
+
+
 //-----------------------------------LoRa
 
 #include "EBI.h"
@@ -64,7 +67,7 @@ long duration= 0;
 const int maxSample=100;
 
 //3 Threshold distances in cm
-int thresh[3] = {14, 50, 130};
+int thresh[3] = {10, 23, 46};
 
 //SENSOR
 const int trigPin = 5; 
@@ -76,16 +79,47 @@ int distanceArray[maxSample];
 
 //ACTUATOR (LED)
 int blueLed = 2;
-int greenLed = 3;
+int greenLed = 8;
 int redLed = 4;
 
 //MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
+int led = 13; // pin for the LED : touchsensor
+int state=1;  //touch sensor
+
+boolean readData = true;
+boolean readTouchSensor(){
+
+  
+  if(digitalRead(TOUCH_SENSOR) > 0)
+  {digitalWrite(led, state); // turn LED on
+  
+  
+      switch (state) {
+      case 1:
+      state = 0;
+      break;
+      case 0:
+      state = 1;
+      break;
+     }
+
+     Serial.println("Can is now OPEN");
+  }
+
+  if(state == 1)
+  return false;
+
+  return true;
+}
 
 void setup()
 {
   // Debug console
   Serial.begin(115200);    // Initialize serial communications with the PC
+
+  pinMode(led, OUTPUT);
+  pinMode(TOUCH_SENSOR, INPUT);
 
   Serial.print("Starting...");
   while(hEbi.begin()!=EBIES_Success) Serial.println("Failed");
@@ -154,6 +188,7 @@ int measureThrashLevel(){
  //t = duration/2 [us] (Round Trip Time/2)
   
  distance = duration*0.034/2;     // s = t * v  
+
   
 // root[F("distance")] = distance;
  
@@ -206,8 +241,9 @@ int i=0;
 
 void sendData(int avg){
   
-   Serial.print("Average level: ");
+   Serial.print("Full: ");
    Serial.println(avg);
+   Serial.print(" %");
 
    Serial.println("Sending new data...");
    
@@ -252,26 +288,38 @@ void loop()
  // if (mfrc522.PICC_IsNewCardPresent()) {
   //   readRFID();
  // }
+
+  readData=readTouchSensor();
+  
+  if(readData){
+    
   distanceArray[i] = measureThrashLevel();
   i++;
+  
   if(i==maxSample){
       long sum=0;
       for(int k=0; k<maxSample; k++){
         sum += distanceArray[k];
-      }
+        }
       
-      int average = sum/maxSample;
-      sendData(average);
+      double average = sum/maxSample;
+
+      Serial.print("average :");
+      Serial.println(average);
+ 
+      int fullnessPercentage = (1.0 - average/46.0) * 100.0;
+      
+      sendData(fullnessPercentage);
+      
       i=0;
+      }
+
   }
-
-
 
   
  
   delay(100);
 }
-
 
 
 
