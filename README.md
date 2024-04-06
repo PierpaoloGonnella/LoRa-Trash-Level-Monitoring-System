@@ -1,6 +1,6 @@
 # Smart Trash Can Monitoring System
 
-![Circuit Diagram](proto.JPG)
+<img src="proto.JPG" alt="Prototype of Connected Can" width="400">
 
 This project is an Arduino-based system for monitoring the fill level of a trash can. It utilizes an ultrasonic sensor (HC-SR04) to measure the distance to the trash, and a touch sensor to detect when the trash can is opened. The fill level is then displayed using RGB LEDs, and the data is transmitted via LoRaWAN protocol.
 
