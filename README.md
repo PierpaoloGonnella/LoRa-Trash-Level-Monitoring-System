@@ -1,4 +1,4 @@
-# Smart Trash Can Monitoring System
+# LoRa Connected Smart Trash Can Monitoring System
 
 <img src="proto.JPG" alt="Prototype of Connected Can" width="400">
 
