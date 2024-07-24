@@ -18,8 +18,57 @@ This project is an Arduino-based system for monitoring the fill level of a trash
 - Touch Sensor
 - EBI LoRaWAN Module
 
-## Breadboard Diagram
+## Diagram
+```
+Arduino UNO:
+  +---------------------------------------+
+  |                                       |
+  |                +-----+                |
+  |                | USB |                |
+  |                +-----+                |
+  |  [ ]D13                        D12[ ] |
+  |  [ ]D11                        D10[ ] |
+  |  [ ]D9                         D8[ ]---[220Ω]---|>|---GND (Green LED)
+  |  [ ]D7                         D6[ ]---|          |
+  |  [ ]D5                         D4[ ]---[220Ω]---|>|---GND (Red LED)
+  |  [ ]D3 (Touch Sensor)          D2[ ]---[220Ω]---|>|---GND (Blue LED)
+  |  [ ]D1                         D0[ ] |
+  |  [ ]GND                      RST[ ] |
+  |  [ ]RST                      TX1[ ] |
+  |  [ ]Vin                      RX0[ ] |
+  |  [ ]5V                        GND[ ] |
+  |  [ ]GND                      AREF[ ] |
+  |  [ ]A0                       A1[ ] |
+  |  [ ]A2                       A3[ ] |
+  |  [ ]A4                       A5[ ] |
+  |  [ ]A6                       A7[ ] |
+  |  +-----------------------------------+
 
+HC-SR04 Ultrasonic Sensor:
+  +---------------------+
+  |    HC-SR04          |
+  |                     |
+  |  VCC    GND         |
+  |   |      |          |
+  |  Trig   Echo        |
+  +---------------------+
+ 
+Connections:
+  - Arduino 5V to HC-SR04 VCC
+  - Arduino GND to HC-SR04 GND
+  - Arduino Digital Pin 5 to HC-SR04 Trig
+  - Arduino Digital Pin 6 to HC-SR04 Echo
+  - Arduino Digital Pin 2 to Blue LED (with 220Ω resistor)
+  - Arduino Digital Pin 8 to Green LED (with 220Ω resistor)
+  - Arduino Digital Pin 4 to Red LED (with 220Ω resistor)
+  - Arduino Digital Pin 3 to Touch Sensor
+
+EBI LoRaWAN Module:
+  - Connect VCC and GND to appropriate power and ground pins.
+  - Connect the required communication pins based on the EBI LoRaWAN module's documentation.
+```
+
+## Breadboard Diagram
 ```
 Breadboard
 +---------------------------------------------------------+
