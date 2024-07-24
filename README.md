@@ -6,14 +6,52 @@
 
 
 
-This project is an Arduino-based system for monitoring the fill level of a trash can. It utilizes an ultrasonic sensor (HC-SR04) to measure the distance to the trash, and a touch sensor to detect when the trash can is opened. The fill level is then displayed using RGB LEDs, and the data is transmitted via LoRaWAN protocol.
+This project is an Arduino-based system for monitoring the fill level of a trash can. It utilizes an ultrasonic sensor (HC-SR04) to measure the distance to the trash, and a touch sensor to detect when the trash can is opened. The fill level is then displayed using RGB LEDs, and the data is transmitted via LoRaWAN protocol.This project involves an Arduino UNO, an ultrasonic sensor (HC-SR04), three LEDs (green, blue, red), a touch sensor, and an EBI LoRaWAN module to monitor and communicate the fill level of a trash bin.
 
 ## Components
 
 - Arduino UNO
 - Ultrasonic Sensor HC-SR04
-- RGB LED (Red, Green, Blue)
+- Green LED
+- Blue LED
+- Red LED
 - Touch Sensor
+- EBI LoRaWAN Module
+
+## Breadboard Diagram
+
+```
+Breadboard
++---------------------------------------------------------+
+|                                                         |
+| [GND]--------------------------------------------------+|
+| [5V]---+-----------------------------------------------+|
+|        |                                               ||
+|        |   +---------+                                 ||
+|        |   |  HC-SR04 |                                ||
+|        |   |         |                                 ||
+|        |   |  VCC    |-------------------------------5V||
+|        |   |  GND    |-------------------------------GND||
+|        |   |  Trig   |--------------------------Digital5||
+|        |   |  Echo   |--------------------------Digital6||
+|        |   +---------+                                 ||
+|        |                                               ||
+|        +-----+                                         ||
+|              |                                         ||
+|        [220Ω]|   [LED]----GND                          ||
+|   Digital 2--+                                         ||
+|              |                                         ||
+|        [220Ω]|   [LED]----GND                          ||
+|   Digital 8--+                                         ||
+|              |                                         ||
+|        [220Ω]|   [LED]----GND                          ||
+|   Digital 4--+                                         ||
+|              |                                         ||
+| [Touch Sensor]                                         ||
+|   Digital 3--+                                         ||
+|                                                         |
++---------------------------------------------------------+
+```
 
 ## Features
 
