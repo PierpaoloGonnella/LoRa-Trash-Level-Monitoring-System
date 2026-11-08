@@ -1,5 +1,7 @@
 # LoRa IoT Smart Trash Can Monitoring System
 
+[![tests](https://github.com/PierpaoloGonnella/LoRa-Trash-Level-Monitoring-System/actions/workflows/tests.yml/badge.svg)](https://github.com/PierpaoloGonnella/LoRa-Trash-Level-Monitoring-System/actions/workflows/tests.yml)
+
 <p align="center">
 <img src="proto.JPG" alt="Prototype of Connected Can" width="400"/>
 </p>
